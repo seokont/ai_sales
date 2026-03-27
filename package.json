@@ -1,0 +1,27 @@
+{
+  "name": "ai-seller-widget",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:backend": "npm run dev -w backend",
+    "dev:frontend": "npm run dev -w frontend",
+    "dev:widget": "npm run dev -w widget",
+    "build": "npm run build -w @ai-seller-widget/shared && npm run build -w backend",
+    "build:backend": "npm run build -w backend",
+    "build:frontend": "npm run build -w frontend",
+    "build:widget": "npm run build -w widget",
+    "db:generate": "npm run prisma:generate -w backend",
+    "db:migrate": "npm run prisma:migrate -w backend",
+    "db:push": "npm run prisma:push -w backend",
+    "db:studio": "npm run prisma:studio -w backend",
+    "db:seed": "npm run prisma:seed -w backend",
+    "test": "npm test -w backend"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -1,0 +1,127 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  role      String   @default("user")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  companies UserCompany[]
+  tokens    RefreshToken[]
+}
+
+model Company {
+  id                String   @id @default(cuid())
+  name              String
+  domain            String?
+  apiKey            String   @unique
+  groqKey           String?
+  systemPrompt      String?  @db.Text
+  plan              String   @default("free")
+  telegramBotToken  String?
+  telegramChatId    String?
+  language          String   @default("en")
+  widgetGreeting    String?  @db.Text
+  widgetHeader      String?  @db.Text
+  websiteUrl        String?
+  avatarPath        String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  users        UserCompany[]
+  chats        Chat[]
+  knowledge    KnowledgeItem[]
+  scraperJobs  ScraperJob[]
+}
+
+model UserCompany {
+  id        String   @id @default(cuid())
+  userId    String
+  companyId String
+  role      String   @default("member")
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  @@unique([userId, companyId])
+}
+
+model Chat {
+  id        String   @id @default(cuid())
+  companyId String
+  sessionId String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  messages Message[]
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  chatId    String
+  role      String
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+}
+
+model KnowledgeItem {
+  id        String   @id @default(cuid())
+  companyId String
+  title     String
+  content   String   @db.Text
+  type      String
+  jsonData  Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+}
+
+model ScraperJob {
+  id        String   @id @default(cuid())
+  companyId String
+  url       String
+  status    String   @default("pending")
+  result    Json?
+  error     String?  @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ContactRequest {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  message   String   @db.Text
+  plan      String?
+  createdAt DateTime @default(now())
+}
+
+model Settings {
+  id          String  @id @default(cuid())
+  emailHost   String?
+  emailPort   Int?
+  emailSecure Boolean @default(false)
+  emailUser   String?
+  emailPass   String?
+  emailFrom   String?
+  emailTo     String?
+}
