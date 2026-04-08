@@ -6,19 +6,6 @@ const DEMO_API_KEY = 'sk_demo_main_page_000000000000000000000000';
 async function main() {
   const prisma = new PrismaClient();
   try {
-
-  const existing = await prisma.company.findUnique({
-    where: { apiKey: DEMO_API_KEY },
-  });
-  if (existing) {
-    await prisma.company.update({
-      where: { apiKey: DEMO_API_KEY },
-      data: { websiteUrl: 'https://ai-seller-widget.com' },
-    });
-    console.log('Demo company updated with websiteUrl');
-    return;
-  }
-
   const demoUser = await prisma.user.upsert({
     where: { email: 'demo@ai-seller-widget.com' },
     update: {},
@@ -30,27 +17,45 @@ async function main() {
     },
   });
 
-  const demoCompany = await prisma.company.create({
-    data: {
-      name: 'AI Seller Demo (головна)',
-      apiKey: DEMO_API_KEY,
-      systemPrompt:
-        'You are an AI sales assistant for AI Seller Widget. Help visitors learn about the product. Answer questions about features, pricing, integration. Be friendly and concise.',
-      plan: 'pro',
-      widgetGreeting: 'Чим можу допомогти?',
-      websiteUrl: 'https://ai-seller-widget.com',
-    },
+  let demoCompany = await prisma.company.findUnique({
+    where: { apiKey: DEMO_API_KEY },
   });
 
-  await prisma.userCompany.create({
-    data: {
+  if (!demoCompany) {
+    demoCompany = await prisma.company.create({
+      data: {
+        name: 'AI Seller Demo (головна)',
+        apiKey: DEMO_API_KEY,
+        systemPrompt:
+          'You are an AI sales assistant for AI Seller Widget. Help visitors learn about the product. Answer questions about features, pricing, integration. Be friendly and concise.',
+        plan: 'pro',
+        widgetGreeting: 'Чим можу допомогти?',
+        websiteUrl: 'https://ai-seller-widget.com',
+      },
+    });
+  } else {
+    await prisma.company.update({
+      where: { apiKey: DEMO_API_KEY },
+      data: { websiteUrl: 'https://ai-seller-widget.com' },
+    });
+  }
+
+  await prisma.userCompany.upsert({
+    where: {
+      userId_companyId: {
+        userId: demoUser.id,
+        companyId: demoCompany.id,
+      },
+    },
+    update: {},
+    create: {
       userId: demoUser.id,
       companyId: demoCompany.id,
       role: 'owner',
     },
   });
 
-  console.log('Demo company created. API key for main page:', DEMO_API_KEY);
+  console.log('Demo seed OK. Login: demo@ai-seller-widget.com / API key:', DEMO_API_KEY);
   } finally {
     await prisma.$disconnect();
   }

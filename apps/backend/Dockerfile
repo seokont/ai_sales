@@ -27,4 +27,5 @@ RUN npm run build -w backend
 ENV NODE_ENV=production
 EXPOSE 3001
 WORKDIR /app/apps/backend
-CMD ["node", "dist/src/main.js"]
+RUN chmod +x docker-entrypoint.sh
+ENTRYPOINT ["./docker-entrypoint.sh"]

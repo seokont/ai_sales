@@ -112,15 +112,12 @@ docker compose logs -f
 
 ### Инициализация базы данных
 
-После первого запуска выполните миграции:
+При **старте контейнера `backend`** автоматически выполняются `prisma db push` и `prisma db seed` (демо-пользователь `demo@ai-seller-widget.com`, пароль в [seed.ts](apps/backend/prisma/seed.ts)). После обновления образа пересоберите backend: `docker compose build backend && docker compose up -d backend`.
+
+Вручную при необходимости:
 
 ```bash
 docker compose exec backend npx prisma db push
-```
-
-Опционально — демо-данные:
-
-```bash
 docker compose exec backend npm run prisma:seed
 ```
 
