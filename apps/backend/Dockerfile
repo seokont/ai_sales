@@ -18,8 +18,8 @@ COPY packages/shared ./packages/shared
 COPY apps/backend ./apps/backend
 COPY packages/widget ./packages/widget
 
-# Build shared, widget, then backend
-RUN npm run build -w shared 2>/dev/null || true
+# Build shared (workspace name is @ai-seller-widget/shared), then backend
+RUN npm run build -w @ai-seller-widget/shared
 RUN npm run build -w widget 2>/dev/null || true
 RUN cd apps/backend && npx prisma generate
 RUN npm run build -w backend
