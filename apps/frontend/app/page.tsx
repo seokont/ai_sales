@@ -62,9 +62,21 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Hero */}
-      <section className="pt-32 pb-20 px-6">
-        <div className="max-w-4xl mx-auto text-center">
+      {/* Hero — positive z-index so the bg is not painted under <main> bg-zinc-950 */}
+      <section className="relative isolate pt-32 pb-20 px-6 overflow-hidden">
+        <div
+          className="pointer-events-none absolute inset-0 z-0 bg-cover bg-center opacity-90"
+          style={{
+            backgroundImage:
+              "url(https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1920&q=80)",
+          }}
+          aria-hidden
+        />
+        <div
+          className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-zinc-950/85 via-zinc-950/75 to-zinc-950"
+          aria-hidden
+        />
+        <div className="relative z-[2] max-w-4xl mx-auto text-center">
           <AnimateOnScroll variant="fade-up" delay={0}>
             <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
               {t.home.heroTitle}
