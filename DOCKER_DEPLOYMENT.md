@@ -108,7 +108,7 @@ docker compose logs -f
 
 **Доступ через nginx (порт 80):** http://localhost — frontend и API на одном хосте.
 
-**pgAdmin:** по умолчанию http://localhost:5051 — логин: `admin@admin.com` / `admin` (или из `.env`: `PGADMIN_EMAIL`, `PGADMIN_PASSWORD`). Порт задаётся переменной `PGADMIN_PORT` (если `5050` или `5051` заняты — укажите свободный, например `5052`). Добавьте сервер: host=`postgres`, port=`5432`, user=`postgres`, password=`postgres`.
+**pgAdmin:** по умолчанию http://localhost:5051 — логин: `admin@admin.com` / `admin` (или из `.env`: `PGADMIN_DEFAULT_EMAIL`, `PGADMIN_DEFAULT_PASSWORD`). Порт задаётся переменной `PGADMIN_PORT` (если `5050` или `5051` заняты — укажите свободный, например `5052`). Добавьте сервер: host=`postgres`, port=`5432`, user=`postgres`, password=`postgres`. Если в логах `EOFError` / `input(ENTER_EMAIL_ADDRESS)` — удалите том `pgadmin_data`, убедитесь что email/пароль в `.env` не пустые, пересоздайте контейнер (`docker compose up -d --force-recreate pgadmin`).
 
 ### Инициализация базы данных
 
