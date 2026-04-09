@@ -6,6 +6,8 @@ WORKDIR /app
 # передаём правильный адрес backend
 ARG NEXT_PUBLIC_API_URL=http://backend:3001
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_DEMO_WIDGET_KEY=sk_demo_main_page_000000000000000000000000
+ENV NEXT_PUBLIC_DEMO_WIDGET_KEY=$NEXT_PUBLIC_DEMO_WIDGET_KEY
 
 COPY package*.json ./
 COPY apps/frontend/package*.json ./apps/frontend/
