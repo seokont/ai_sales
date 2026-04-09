@@ -33,4 +33,4 @@ EXPOSE 3001
 WORKDIR /app/apps/backend
 
 # Запускаємо бекенд напряму
-CMD ["node", "dist/main.js"]
+CMD ["node", "dist/src/main.js"]
