@@ -7,9 +7,63 @@ interface ChatMessage {
   content: string;
 }
 
+/** jsonData from file uploads is only { sourceFile }; real catalog rows use title/description/price/url. */
+function isUploadMetadataOnly(obj: Record<string, unknown>): boolean {
+  const keys = Object.keys(obj);
+  if (keys.length === 0) return true;
+  const allowed = new Set(['sourceFile', 'source']);
+  return keys.every((k) => allowed.has(k));
+}
+
+function formatCatalogLine(o: Record<string, unknown>): string {
+  return `- ${o.title || ''}: ${o.description || o.content || ''} | Price: ${o.price ?? 'N/A'} | ${o.url || ''}`;
+}
+
+function hasCatalogShape(o: Record<string, unknown>): boolean {
+  return Boolean(
+    o.title || o.description || o.content || o.price != null || o.url,
+  );
+}
+
 @Injectable()
 export class AiService {
   constructor(private prisma: PrismaService) {}
+
+  private formatKnowledgeForPrompt(k: {
+    title: string;
+    content: string;
+    jsonData: unknown;
+  }): string {
+    if (k.jsonData == null || typeof k.jsonData !== 'object') {
+      return `- ${k.title}: ${k.content}`;
+    }
+
+    const raw = k.jsonData as Record<string, unknown> | unknown[];
+
+    if (Array.isArray(raw)) {
+      const lines: string[] = [];
+      for (const item of raw) {
+        if (!item || typeof item !== 'object') continue;
+        const o = item as Record<string, unknown>;
+        if (isUploadMetadataOnly(o)) continue;
+        if (!hasCatalogShape(o)) continue;
+        lines.push(formatCatalogLine(o));
+      }
+      if (lines.length === 0) {
+        return `- ${k.title}: ${k.content}`;
+      }
+      return lines.join('\n');
+    }
+
+    const single = raw as Record<string, unknown>;
+    if (isUploadMetadataOnly(single)) {
+      return `- ${k.title}: ${k.content}`;
+    }
+    if (!hasCatalogShape(single)) {
+      return `- ${k.title}: ${k.content}`;
+    }
+    return formatCatalogLine(single);
+  }
 
   async chat(companyId: string, messages: ChatMessage[]): Promise<string> {
     const company = await this.prisma.company.findUnique({
@@ -28,18 +82,7 @@ export class AiService {
     });
 
     const knowledgeContext = company.knowledge
-      .map((k) => {
-        if (k.jsonData && typeof k.jsonData === 'object') {
-          const items = Array.isArray(k.jsonData) ? k.jsonData : [k.jsonData];
-          return items
-            .map((item: unknown) => {
-              const o = item as Record<string, unknown>;
-              return `- ${o.title || ''}: ${o.description || o.content || ''} | Price: ${o.price || 'N/A'} | ${o.url || ''}`;
-            })
-            .join('\n');
-        }
-        return `- ${k.title}: ${k.content}`;
-      })
+      .map((k) => this.formatKnowledgeForPrompt(k))
       .join('\n');
 
     const systemPrompt =

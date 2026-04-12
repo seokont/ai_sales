@@ -18,6 +18,25 @@ const ALLOWED_MIME_TYPES: Record<string, string> = {
   'image/webp': 'image',
 };
 
+const TEXT_FILE_EXTENSIONS = new Set(['.txt', '.text', '.md', '.markdown', '.csv', '.log']);
+
+function normalizeMimeType(raw: string | undefined): string {
+  if (!raw || typeof raw !== 'string') return 'application/octet-stream';
+  return raw.split(';')[0].trim().toLowerCase();
+}
+
+function looksLikeTextFile(originalname: string | undefined, mimeNorm: string): boolean {
+  if (mimeNorm === 'text/plain' || mimeNorm === 'application/octet-stream') {
+    const base = (originalname || '').toLowerCase();
+    const dot = base.lastIndexOf('.');
+    const ext = dot >= 0 ? base.slice(dot) : '';
+    if (TEXT_FILE_EXTENSIONS.has(ext)) return true;
+    // plain text without extension (e.g. "README") when server says text/plain
+    if (mimeNorm === 'text/plain' && !ext) return true;
+  }
+  return false;
+}
+
 export interface ProcessedFileResult {
   title: string;
   content: string;
@@ -45,16 +64,19 @@ export class FileProcessorService {
       );
     }
 
-    const mimeType = file.mimetype || 'application/octet-stream';
-    const type = ALLOWED_MIME_TYPES[mimeType];
+    const originalName = file.originalname || 'uploaded-file';
+    const mimeNorm = normalizeMimeType(file.mimetype);
+    let type = ALLOWED_MIME_TYPES[mimeNorm];
+    if (!type && looksLikeTextFile(originalName, mimeNorm)) {
+      type = 'txt';
+    }
 
     if (!type) {
       throw new BadRequestException(
-        `Unsupported file type: ${mimeType}. Allowed: PDF, TXT, JPG, PNG, WEBP`,
+        `Unsupported file type: ${file.mimetype || mimeNorm}. Allowed: PDF, TXT, JPG, PNG, WEBP`,
       );
     }
 
-    const originalName = file.originalname || 'uploaded-file';
     let title: string;
     let content: string;
 
@@ -74,7 +96,7 @@ export class FileProcessorService {
       content = await this.visionService.extractFromImage(
         companyId,
         file.buffer,
-        mimeType,
+        file.mimetype?.split(';')[0]?.trim() || mimeNorm,
       );
       title = originalName.replace(/\.[^.]+$/, '') || 'Image';
     } else {

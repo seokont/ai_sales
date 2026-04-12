@@ -2,6 +2,18 @@ export type Lang = 'en' | 'uk' | 'ru' | 'he';
 
 export const translations = {
   en: {
+    meta: {
+      defaultTitle: 'AI Seller Widget — AI sales assistant for your website',
+      defaultDescription:
+        'Embed a smart sales chat widget: knowledge base, product recommendations, lead capture, Telegram alerts. Dashboard and widget in English, Ukrainian, Russian, and Hebrew.',
+      keywords:
+        'AI chat widget, sales assistant, chatbot, ecommerce, leads, knowledge base, Telegram, embed widget',
+      dashboardTitle: 'Dashboard — AI Seller Widget',
+      dashboardDescription:
+        'Manage your AI sales widget, knowledge base, scraper, chats, and settings.',
+      loginTitle: 'Login — AI Seller Widget',
+      registerTitle: 'Register — AI Seller Widget',
+    },
     nav: {
       overview: 'Overview',
       profile: 'Profile',
@@ -246,6 +258,18 @@ export const translations = {
     },
   },
   uk: {
+    meta: {
+      defaultTitle: 'AI Seller Widget — AI-асистент з продажів для вашого сайту',
+      defaultDescription:
+        'Вбудований чат для продажів: база знань, рекомендації товарів, збір лідів, сповіщення в Telegram. Панель і віджет українською, англійською, російською та івритом.',
+      keywords:
+        'AI чат, віджет продажів, чат-бот, інтернет-магазин, ліди, база знань, Telegram, вбудований віджет',
+      dashboardTitle: 'Панель — AI Seller Widget',
+      dashboardDescription:
+        'Керуйте AI-віджетом, базою знань, скрапером, чатами та налаштуваннями.',
+      loginTitle: 'Вхід — AI Seller Widget',
+      registerTitle: 'Реєстрація — AI Seller Widget',
+    },
     nav: {
       overview: 'Огляд',
       profile: 'Профіль',
@@ -490,6 +514,18 @@ export const translations = {
     },
   },
   ru: {
+    meta: {
+      defaultTitle: 'AI Seller Widget — AI-ассистент по продажам для вашего сайта',
+      defaultDescription:
+        'Встраиваемый чат для продаж: база знаний, рекомендации товаров, сбор лидов, уведомления в Telegram. Панель и виджет на русском, английском, украинском и иврите.',
+      keywords:
+        'AI чат, виджет продаж, чат-бот, интернет-магазин, лиды, база знаний, Telegram, встраиваемый виджет',
+      dashboardTitle: 'Панель — AI Seller Widget',
+      dashboardDescription:
+        'Управляйте AI-виджетом, базой знаний, скрапером, чатами и настройками.',
+      loginTitle: 'Вход — AI Seller Widget',
+      registerTitle: 'Регистрация — AI Seller Widget',
+    },
     nav: {
       overview: 'Обзор',
       profile: 'Профиль',
@@ -734,6 +770,17 @@ export const translations = {
     },
   },
   he: {
+    meta: {
+      defaultTitle: 'AI Seller Widget — עוזר מכירות מבוסס AI לאתר שלך',
+      defaultDescription:
+        'הטמעת וידג\'ט צ\'אט למכירות: בסיס ידע, המלצות מוצרים, איסוף לידים והתראות בטלגרם. לוח בקרה ווידג\'ט בעברית, אנגלית, אוקראינית ורוסית.',
+      keywords:
+        'צ\'אט AI, וידג\'ט מכירות, צ\'אטבוט, מסחר אלקטרוני, לידים, בסיס ידע, טלגרם, וידג\'ט מוטמע',
+      dashboardTitle: 'לוח בקרה — AI Seller Widget',
+      dashboardDescription: 'ניהול וידג\'ט ה-AI, בסיס הידע, הסורק, הצ\'אטים וההגדרות.',
+      loginTitle: 'התחברות — AI Seller Widget',
+      registerTitle: 'הרשמה — AI Seller Widget',
+    },
     nav: {
       overview: 'סקירה',
       profile: 'פרופיל',

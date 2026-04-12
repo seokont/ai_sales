@@ -310,7 +310,13 @@ git add package-lock.json
 
 ### Puppeteer в backend (скрапер)
 
-Backend использует Puppeteer. Образ `node:20-slim` может не содержать библиотеки для headless Chrome. При ошибках скрапера рассмотрите использование образа с Chromium или установку зависимостей в Dockerfile.
+В [`apps/backend/Dockerfile`](apps/backend/Dockerfile) ставится пакет **`chromium`** и задаются `PUPPETEER_SKIP_CHROMIUM_DOWNLOAD` / `PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium`, чтобы Puppeteer не качал свой Chrome и запускал системный браузер (в контейнере иначе часто падает с «Failed to launch the browser process»).
+
+После правок пересоберите backend: `docker compose build backend && docker compose up -d backend`.
+
+Проверка: в логах `docker compose logs backend` при сбое скрапера будет сообщение `Scraper job … failed`; в БД у `ScraperJob` поле `error` с текстом ошибки.
+
+Убедитесь, что сервис **redis** запущен (очередь BullMQ) и план компании **Pro** или **Enterprise** — иначе API скрапера вернёт 403.
 
 ### Порт занят
 

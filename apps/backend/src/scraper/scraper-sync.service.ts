@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { ScraperRunner } from './scraper.runner';
 import { RunScraperDto } from '@ai-seller-widget/shared';
 
 @Injectable()
 export class ScraperSyncService {
+  private readonly logger = new Logger(ScraperSyncService.name);
+
   constructor(
     private prisma: PrismaService,
     private scraperRunner: ScraperRunner,
@@ -19,7 +21,9 @@ export class ScraperSyncService {
       },
     });
 
-    this.scraperRunner.run(job.id, companyId, dto.url).catch(() => {});
+    this.scraperRunner.run(job.id, companyId, dto.url).catch((err) => {
+      this.logger.error(`Scraper run failed (job ${job.id})`, err instanceof Error ? err.stack : err);
+    });
 
     return job;
   }

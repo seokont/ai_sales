@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import puppeteer from 'puppeteer';
 
@@ -11,6 +11,8 @@ interface ScrapedItem {
 
 @Injectable()
 export class ScraperRunner {
+  private readonly logger = new Logger(ScraperRunner.name);
+
   constructor(private prisma: PrismaService) {}
 
   async run(jobId: string, companyId: string, url: string) {
@@ -19,11 +21,19 @@ export class ScraperRunner {
       data: { status: 'running' },
     });
 
+    const executablePath = process.env.PUPPETEER_EXECUTABLE_PATH?.trim() || undefined;
+
     let browser;
     try {
       browser = await puppeteer.launch({
-        headless: 'new',
-        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        headless: true,
+        executablePath,
+        args: [
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+          '--disable-dev-shm-usage',
+          '--disable-gpu',
+        ],
       });
 
       const page = await browser.newPage();
@@ -125,11 +135,13 @@ export class ScraperRunner {
         },
       });
     } catch (error) {
+      const msg = error instanceof Error ? error.message : String(error);
+      this.logger.error(`Scraper job ${jobId} failed: ${msg}`, error instanceof Error ? error.stack : undefined);
       await this.prisma.scraperJob.update({
         where: { id: jobId },
         data: {
           status: 'failed',
-          error: error instanceof Error ? error.message : String(error),
+          error: msg,
         },
       });
     } finally {

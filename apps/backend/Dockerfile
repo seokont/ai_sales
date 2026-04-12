@@ -2,8 +2,19 @@
 FROM node:20-slim AS base
 WORKDIR /app
 
-# OpenSSL для Prisma (node:20-slim має OpenSSL 3; Prisma потребує libssl)
-RUN apt-get update -y && apt-get install -y openssl ca-certificates curl && rm -rf /var/lib/apt/lists/*
+# OpenSSL для Prisma + Chromium для Puppeteer (скрапер)
+RUN apt-get update -y \
+  && apt-get install -y --no-install-recommends \
+    openssl \
+    ca-certificates \
+    curl \
+    chromium \
+    fonts-liberation \
+  && rm -rf /var/lib/apt/lists/*
+
+# Не качати вбудований Chrome з npm — використовуємо системний Chromium
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
 # Копіюємо конфіг workspace
 COPY package.json package-lock.json* ./
