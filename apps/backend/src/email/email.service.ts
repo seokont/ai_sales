@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -14,6 +14,8 @@ export interface EmailSettings {
 
 @Injectable()
 export class EmailService {
+  private readonly logger = new Logger(EmailService.name);
+
   constructor(private prisma: PrismaService) {}
 
   async getSettings(): Promise<EmailSettings | null> {
@@ -59,27 +61,53 @@ export class EmailService {
     email: string;
     message: string;
     plan?: string;
-  }): Promise<boolean> {
+  }): Promise<{ sent: boolean; reason?: string }> {
     const settings = await this.getSettings();
-    if (!settings?.emailHost || !settings?.emailTo || !settings.emailFrom) {
-      return false;
+    const host = settings?.emailHost?.trim();
+    const to = settings?.emailTo?.trim();
+    const from = settings?.emailFrom?.trim();
+    if (!host || !to || !from) {
+      const missing: string[] = [];
+      if (!host) missing.push('emailHost');
+      if (!from) missing.push('emailFrom');
+      if (!to) missing.push('emailTo');
+      this.logger.warn(
+        `Contact email skipped: SMTP not configured in Admin → Settings (missing: ${missing.join(', ')}).`,
+      );
+      return { sent: false, reason: 'smtp_not_configured' };
     }
+
+    const port = settings!.emailPort ?? 587;
+    const secure =
+      settings!.emailSecure === true || port === 465;
+    const requireTLS = !secure && port === 587;
+
     const transporter = nodemailer.createTransport({
-      host: settings.emailHost,
-      port: settings.emailPort ?? 587,
-      secure: settings.emailSecure,
-      auth: settings.emailUser && settings.emailPass
-        ? { user: settings.emailUser, pass: settings.emailPass }
-        : undefined,
+      host,
+      port,
+      secure,
+      requireTLS,
+      auth:
+        settings!.emailUser?.trim() && settings!.emailPass
+          ? { user: settings!.emailUser!.trim(), pass: settings!.emailPass }
+          : undefined,
+      connectionTimeout: 20_000,
     });
+
     const planLabel = data.plan ? `\nPlan: ${data.plan}` : '';
-    await transporter.sendMail({
-      from: settings.emailFrom,
-      to: settings.emailTo,
-      subject: `[AI Seller] New contact: ${data.name}`,
-      text: `Name: ${data.name}\nEmail: ${data.email}${planLabel}\n\nMessage:\n${data.message}`,
-      html: `<p><b>Name:</b> ${data.name}</p><p><b>Email:</b> <a href="mailto:${data.email}">${data.email}</a></p>${data.plan ? `<p><b>Plan:</b> ${data.plan}</p>` : ''}<p><b>Message:</b></p><p>${data.message.replace(/\n/g, '<br>')}</p>`,
-    });
-    return true;
+    try {
+      await transporter.sendMail({
+        from,
+        to,
+        subject: `[AI Seller] New contact: ${data.name}`,
+        text: `Name: ${data.name}\nEmail: ${data.email}${planLabel}\n\nMessage:\n${data.message}`,
+        html: `<p><b>Name:</b> ${data.name}</p><p><b>Email:</b> <a href="mailto:${data.email}">${data.email}</a></p>${data.plan ? `<p><b>Plan:</b> ${data.plan}</p>` : ''}<p><b>Message:</b></p><p>${data.message.replace(/\n/g, '<br>')}</p>`,
+      });
+      return { sent: true };
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      this.logger.error(`SMTP sendMail failed (${host}:${port}, secure=${secure}): ${msg}`);
+      return { sent: false, reason: 'smtp_send_failed' };
+    }
   }
 }

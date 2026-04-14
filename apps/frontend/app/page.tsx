@@ -16,6 +16,7 @@ export default function Home() {
   const [contactPlan, setContactPlan] = useState('');
   const [contactSending, setContactSending] = useState(false);
   const [contactSuccess, setContactSuccess] = useState(false);
+  const [contactEmailWarning, setContactEmailWarning] = useState('');
   const [contactError, setContactError] = useState('');
 
   return (
@@ -393,6 +394,11 @@ export default function Home() {
             <AnimateOnScroll variant="fade-up">
               <div className="p-6 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-center">
                 {t.home.contactSuccess}
+                {contactEmailWarning ? (
+                  <p className="mt-4 text-amber-300/95 text-sm text-left font-normal leading-relaxed">
+                    {contactEmailWarning}
+                  </p>
+                ) : null}
               </div>
             </AnimateOnScroll>
           ) : (
@@ -401,6 +407,7 @@ export default function Home() {
                 onSubmit={async (e) => {
                   e.preventDefault();
                   setContactError('');
+                  setContactEmailWarning('');
                   setContactSending(true);
                   try {
                     const res = await api.contact({
@@ -412,6 +419,9 @@ export default function Home() {
                     const data = await res.json();
                     if (data.ok) {
                       setContactSuccess(true);
+                      setContactEmailWarning(
+                        data.emailSent === false ? t.home.contactEmailNotSent : '',
+                      );
                       setContactName('');
                       setContactEmail('');
                       setContactMessage('');

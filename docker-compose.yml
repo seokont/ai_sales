@@ -42,6 +42,7 @@ services:
       FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
       CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000}
       ADMIN_EMAILS: ${ADMIN_EMAILS:-admin@admin.com}
+      # Contact-form email: set SMTP in dashboard Admin → Email (stored in DB). Check backend logs if sends fail.
     depends_on:
       postgres:
         condition: service_healthy

@@ -108,6 +108,8 @@ export const translations = {
       contactPlan: 'Plan of interest',
       contactSubmit: 'Send',
       contactSuccess: 'Thank you! We will contact you soon.',
+      contactEmailNotSent:
+        'Your request was saved, but the notification email could not be sent. If you are the site owner, check SMTP settings in Admin → Email or server logs.',
       contactError: 'Something went wrong. Please try again.',
     },
     login: {
@@ -364,6 +366,8 @@ export const translations = {
       contactPlan: 'Цікавий тариф',
       contactSubmit: 'Надіслати',
       contactSuccess: 'Дякуємо! Ми зв\'яжемося з вами найближчим часом.',
+      contactEmailNotSent:
+        'Заявку збережено, але лист-сповіщення не надіслано. Якщо ви адміністратор, перевірте SMTP у Адмінка → Email або логи сервера.',
       contactError: 'Щось пішло не так. Спробуйте ще раз.',
     },
     login: {
@@ -620,6 +624,8 @@ export const translations = {
       contactPlan: 'Интересующий тариф',
       contactSubmit: 'Отправить',
       contactSuccess: 'Спасибо! Мы свяжемся с вами в ближайшее время.',
+      contactEmailNotSent:
+        'Заявка сохранена, но письмо-уведомление не отправлено. Если вы администратор, проверьте SMTP в Админка → Email или логи сервера.',
       contactError: 'Что-то пошло не так. Попробуйте ещё раз.',
     },
     login: {
@@ -875,6 +881,8 @@ export const translations = {
       contactPlan: 'תוכנית מעניינת',
       contactSubmit: 'שלח',
       contactSuccess: 'תודה! ניצור איתכם קשר בהקדם.',
+      contactEmailNotSent:
+        'הבקשה נשמרה, אך לא ניתן לשלוח אימייל התראה. אם אתם מנהלי האתר, בדקו את הגדרות SMTP בממשק הניהול או את לוגי השרת.',
       contactError: 'משהו השתבש. נסה שוב.',
     },
     login: {

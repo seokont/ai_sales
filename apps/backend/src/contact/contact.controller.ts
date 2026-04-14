@@ -1,9 +1,11 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Logger, Post } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { EmailService } from '../email/email.service';
 
 @Controller('contact')
 export class ContactController {
+  private readonly logger = new Logger(ContactController.name);
+
   constructor(
     private prisma: PrismaService,
     private emailService: EmailService,
@@ -31,16 +33,17 @@ export class ContactController {
         plan: plan?.trim() || null,
       },
     });
-    try {
-      await this.emailService.sendContactNotification({
-        name: name.trim(),
-        email: email.trim(),
-        message: message.trim(),
-        plan: plan?.trim(),
-      });
-    } catch {
-      // Email is optional; request is saved
+    const emailResult = await this.emailService.sendContactNotification({
+      name: name.trim(),
+      email: email.trim(),
+      message: message.trim(),
+      plan: plan?.trim(),
+    });
+    if (!emailResult.sent) {
+      this.logger.warn(
+        `Contact saved but email not sent (reason=${emailResult.reason ?? 'unknown'}). Check Admin → Email settings and backend logs.`,
+      );
     }
-    return { ok: true };
+    return { ok: true, emailSent: emailResult.sent };
   }
 }
