@@ -3,6 +3,7 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './app.module';
 import { PrismaService } from './prisma/prisma.service';
+import { applyWidgetEmbedCors } from './widget/widget-embed-cors.middleware';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
@@ -14,6 +15,7 @@ describe('AppController (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    app.use(applyWidgetEmbedCors);
     app.useGlobalPipes(
       new ValidationPipe({
         whitelist: true,
@@ -44,5 +46,24 @@ describe('AppController (e2e)', () => {
       .post('/widget/message')
       .send({ message: 'test', chatId: 'test-123' })
       .expect(401);
+  });
+
+  it('/widget/message (OPTIONS) preflight allows embed origin', () => {
+    return request(app.getHttpServer())
+      .options('/widget/message')
+      .set('Origin', 'https://customer-embed.example')
+      .set('Access-Control-Request-Method', 'POST')
+      .set('Access-Control-Request-Headers', 'content-type')
+      .expect(204)
+      .expect('Access-Control-Allow-Origin', '*')
+      .expect('Access-Control-Allow-Headers', /Content-Type/);
+  });
+
+  it('/widget/chat/:id (GET) includes embed CORS headers', () => {
+    return request(app.getHttpServer())
+      .get('/widget/chat/some-id?apiKey=invalid')
+      .set('Origin', 'https://customer-embed.example')
+      .expect(401)
+      .expect('Access-Control-Allow-Origin', '*');
   });
 });

@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { Logger } from 'nestjs-pino';
+import { applyWidgetEmbedCors } from './widget/widget-embed-cors.middleware';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
@@ -16,6 +17,8 @@ async function bootstrap() {
       crossOriginOpenerPolicy: false,
     }),
   );
+
+  app.use(applyWidgetEmbedCors);
 
   const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
   const corsOrigins = process.env.CORS_ORIGINS
