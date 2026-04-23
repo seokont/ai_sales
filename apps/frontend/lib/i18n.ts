@@ -119,6 +119,7 @@ export const translations = {
       submit: 'Login',
       noAccount: "No account?",
       register: 'Register',
+      backToHome: 'Home',
     },
     register: {
       title: 'Register',
@@ -129,6 +130,7 @@ export const translations = {
       submit: 'Register',
       haveAccount: 'Have an account?',
       login: 'Login',
+      backToHome: 'Home',
     },
     dashboard: {
       title: 'Dashboard',
@@ -212,7 +214,8 @@ export const translations = {
       websiteUrlDesc: 'Shown at the bottom of the widget: "Want this? Go to site" with a link.',
       websiteUrlPlaceholder: 'https://yoursite.com',
       widgetAvatar: 'Assistant avatar',
-      widgetAvatarDesc: 'Avatar shown in the widget button. JPG, PNG, GIF or WEBP, max 2 MB.',
+      widgetAvatarDesc: 'Avatar shown in the widget button. JPG, PNG, GIF or WEBP, max 10 MB.',
+      widgetAvatarTooLarge: 'File is too large (max 10 MB).',
       uploading: 'Uploading...',
       saving: 'Saving...',
       plan: 'Plan',
@@ -377,6 +380,7 @@ export const translations = {
       submit: 'Увійти',
       noAccount: 'Немає облікового запису?',
       register: 'Зареєструватися',
+      backToHome: 'На головну',
     },
     register: {
       title: 'Реєстрація',
@@ -387,6 +391,7 @@ export const translations = {
       submit: 'Зареєструватися',
       haveAccount: 'Є обліковий запис?',
       login: 'Увійти',
+      backToHome: 'На головну',
     },
     dashboard: {
       title: 'Панель керування',
@@ -470,7 +475,8 @@ export const translations = {
       websiteUrlDesc: 'Відображається внизу віджета: «Хочеш такий? Перейди на сайт» з посиланням.',
       websiteUrlPlaceholder: 'https://yoursite.com',
       widgetAvatar: 'Аватар асистента',
-      widgetAvatarDesc: 'Аватар на кнопці віджета. JPG, PNG, GIF або WEBP, макс 2 МБ.',
+      widgetAvatarDesc: 'Аватар на кнопці віджета. JPG, PNG, GIF або WEBP, макс 10 МБ.',
+      widgetAvatarTooLarge: 'Файл завеликий (макс. 10 МБ).',
       uploading: 'Завантаження...',
       saving: 'Збереження...',
       plan: 'Тариф',
@@ -635,6 +641,7 @@ export const translations = {
       submit: 'Войти',
       noAccount: 'Нет аккаунта?',
       register: 'Зарегистрироваться',
+      backToHome: 'На главную',
     },
     register: {
       title: 'Регистрация',
@@ -645,6 +652,7 @@ export const translations = {
       submit: 'Зарегистрироваться',
       haveAccount: 'Есть аккаунт?',
       login: 'Войти',
+      backToHome: 'На главную',
     },
     dashboard: {
       title: 'Панель управления',
@@ -728,7 +736,8 @@ export const translations = {
       websiteUrlDesc: 'Показывается внизу виджета: «Хочешь такой? Перейди на сайт» со ссылкой.',
       websiteUrlPlaceholder: 'https://yoursite.com',
       widgetAvatar: 'Аватар ассистента',
-      widgetAvatarDesc: 'Аватар на кнопке виджета. JPG, PNG, GIF или WEBP, макс 2 МБ.',
+      widgetAvatarDesc: 'Аватар на кнопке виджета. JPG, PNG, GIF или WEBP, макс 10 МБ.',
+      widgetAvatarTooLarge: 'Файл слишком большой (макс. 10 МБ).',
       uploading: 'Загрузка...',
       saving: 'Сохранение...',
       plan: 'Тариф',
@@ -892,6 +901,7 @@ export const translations = {
       submit: 'התחבר',
       noAccount: 'אין חשבון?',
       register: 'הירשם',
+      backToHome: 'לדף הבית',
     },
     register: {
       title: 'הרשמה',
@@ -902,6 +912,7 @@ export const translations = {
       submit: 'הירשם',
       haveAccount: 'יש חשבון?',
       login: 'התחבר',
+      backToHome: 'לדף הבית',
     },
     dashboard: {
       title: 'לוח בקרה',
@@ -985,7 +996,8 @@ export const translations = {
       websiteUrlDesc: 'מוצג בתחתית הוידג\'ט: "רוצה כזה? עבור לאתר" עם קישור.',
       websiteUrlPlaceholder: 'https://yoursite.com',
       widgetAvatar: 'אווטר עוזר',
-      widgetAvatarDesc: 'אווטר על כפתור הוידג\'ט. JPG, PNG, GIF או WEBP, עד 2 MB.',
+      widgetAvatarDesc: 'אווטר על כפתור הוידג\'ט. JPG, PNG, GIF או WEBP, עד 10 MB.',
+      widgetAvatarTooLarge: 'הקובץ גדול מדי (עד 10 MB).',
       uploading: 'מעלה...',
       saving: 'שומר...',
       plan: 'תוכנית',

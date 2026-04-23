@@ -19,7 +19,7 @@ import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { CompanyService } from './company.service';
 import { UpdateCompanyDto } from '@ai-seller-widget/shared';
 
-const AVATAR_MAX_SIZE = 2 * 1024 * 1024; // 2 MB
+const AVATAR_MAX_SIZE = 10 * 1024 * 1024; // 10 MB
 const AVATAR_EXTENSIONS = /\.(jpg|jpeg|png|gif|webp)$/i;
 
 @Controller('companies')

@@ -33,7 +33,16 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="min-h-screen bg-zinc-950 flex items-center justify-center p-4">
+    <main className="min-h-screen bg-zinc-950 flex items-center justify-center p-4 relative">
+      <Link
+        href="/"
+        className="absolute top-4 left-4 text-sm text-zinc-400 hover:text-emerald-400 transition inline-flex items-center gap-1.5"
+      >
+        <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        {t.login.backToHome}
+      </Link>
       <div className="absolute top-4 right-4 flex gap-2">
         {(['en', 'uk', 'ru', 'he'] as Lang[]).map((l) => (
           <button key={l} onClick={() => setLang(l)} className={`px-3 py-1 rounded text-sm ${lang === l ? 'bg-emerald-600' : 'bg-zinc-800 hover:bg-zinc-700'}`}>

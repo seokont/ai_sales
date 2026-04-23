@@ -43,6 +43,7 @@ type WidgetCopy = {
   typing: string;
   error: string;
   openChat: string;
+  closePanel: string;
   greeting: string;
   footerWantThis: string;
   voiceListening: string;
@@ -59,6 +60,7 @@ const widgetTranslations: Record<WidgetLang, WidgetCopy> = {
     typing: 'Typing...',
     error: 'Sorry, something went wrong. Please try again.',
     openChat: 'Open chat',
+    closePanel: 'Close',
     greeting: 'How can I help?',
     footerWantThis: 'Want this? Go to site',
     voiceListening: 'Listening… speak now',
@@ -73,6 +75,7 @@ const widgetTranslations: Record<WidgetLang, WidgetCopy> = {
     typing: 'Друкує...',
     error: 'Вибачте, щось пішло не так. Спробуйте ще раз.',
     openChat: 'Відкрити чат',
+    closePanel: 'Закрити',
     greeting: 'Чим можу допомогти?',
     footerWantThis: 'Хочеш такий? Перейди на сайт',
     voiceListening: 'Слухаю… говоріть',
@@ -87,6 +90,7 @@ const widgetTranslations: Record<WidgetLang, WidgetCopy> = {
     typing: 'Печатает...',
     error: 'Извините, что-то пошло не так. Попробуйте ещё раз.',
     openChat: 'Открыть чат',
+    closePanel: 'Закрыть',
     greeting: 'Чем могу помочь?',
     footerWantThis: 'Хочешь такой? Перейди на сайт',
     voiceListening: 'Слушаю… говорите',
@@ -101,6 +105,7 @@ const widgetTranslations: Record<WidgetLang, WidgetCopy> = {
     typing: 'מקליד...',
     error: 'מצטערים, משהו השתבש. נסה שוב.',
     openChat: 'פתח צ\'אט',
+    closePanel: 'סגור',
     greeting: 'במה אוכל לעזור?',
     footerWantThis: 'רוצה כזה? עבור לאתר',
     voiceListening: 'מקשיב… דברו עכשיו',
@@ -248,7 +253,7 @@ function parseExplicitWidgetLang(raw: string | null): WidgetLang | null {
         justify-content: center;
         transition: transform 0.2s;
       }
-      #ai-seller-btn:hover { transform: scale(1.08); animation: ai-seller-gradient 2s ease infinite; box-shadow: 0 8px 32px rgba(236, 72, 153, 0.5), 0 0 20px rgba(139, 92, 246, 0.4); }
+      #ai-seller-btn:hover:not(.ai-seller-headless-listening) { transform: scale(1.08); animation: ai-seller-gradient 2s ease infinite; box-shadow: 0 8px 32px rgba(236, 72, 153, 0.5), 0 0 20px rgba(139, 92, 246, 0.4); }
       #ai-seller-btn .ai-seller-avatar { width: 56px; height: 56px; }
       #ai-seller-btn .ai-seller-avatar-img {
         width: 82px;
@@ -262,6 +267,11 @@ function parseExplicitWidgetLang(raw: string | null): WidgetLang | null {
       #ai-seller-btn.has-custom-avatar {
         overflow: hidden;
         padding: 0;
+        transform-origin: center center;
+        transition: none;
+      }
+      #ai-seller-btn.has-custom-avatar:not(.ai-seller-headless-listening) {
+        animation: ai-seller-pulse 2s ease-in-out infinite, ai-seller-gradient 4s ease infinite;
       }
       #ai-seller-btn.has-custom-avatar .ai-seller-avatar { display: none; }
       #ai-seller-btn.has-custom-avatar .ai-seller-avatar-img { display: block; }
@@ -299,10 +309,47 @@ function parseExplicitWidgetLang(raw: string | null): WidgetLang | null {
       }
       #ai-seller-panel.open { display: flex; }
       #ai-seller-header {
-        padding: 16px;
+        padding: 12px 12px 12px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
         background: linear-gradient(135deg, rgba(139, 92, 246, 0.4) 0%, rgba(236, 72, 153, 0.3) 50%, rgba(249, 115, 22, 0.25) 100%);
         font-weight: 600;
         color: white;
+        flex-shrink: 0;
+      }
+      #ai-seller-header-title {
+        flex: 1;
+        min-width: 0;
+        line-height: 1.35;
+      }
+      #ai-seller-header-close {
+        flex-shrink: 0;
+        width: 32px;
+        height: 32px;
+        border: none;
+        border-radius: 8px;
+        background: rgba(0, 0, 0, 0.2);
+        color: rgba(255, 255, 255, 0.95);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        transition: background 0.15s, color 0.15s;
+      }
+      #ai-seller-header-close:hover {
+        background: rgba(255, 255, 255, 0.12);
+        color: #fff;
+      }
+      #ai-seller-header-close:focus-visible {
+        outline: 2px solid rgba(255, 255, 255, 0.5);
+        outline-offset: 2px;
+      }
+      #ai-seller-header-close svg {
+        display: block;
+        pointer-events: none;
       }
       #ai-seller-messages {
         flex: 1;
@@ -360,6 +407,22 @@ function parseExplicitWidgetLang(raw: string | null): WidgetLang | null {
         border-radius: 50%;
         object-fit: cover;
         flex-shrink: 0;
+      }
+      .ai-seller-msg-avatar--placeholder {
+        object-fit: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(145deg, rgba(99, 102, 241, 0.35) 0%, rgba(139, 92, 246, 0.25) 100%);
+        border: 1px solid rgba(167, 139, 250, 0.35);
+        color: #e9d5ff;
+      }
+      .ai-seller-msg-avatar--placeholder svg {
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+        display: block;
+        opacity: 0.95;
       }
       .ai-seller-msg-row .ai-seller-msg {
         margin-bottom: 0;
@@ -527,7 +590,15 @@ function parseExplicitWidgetLang(raw: string | null): WidgetLang | null {
     <div id="ai-seller-widget" class="${VOICE_UI_ENABLED ? '' : 'voice-ui-off'}">
       <div id="ai-seller-greeting">${T.greeting}</div>
       <div id="ai-seller-panel">
-        <div id="ai-seller-header">${T.header}</div>
+        <div id="ai-seller-header">
+          <span id="ai-seller-header-title">${T.header}</span>
+          <button type="button" id="ai-seller-header-close" aria-label="${T.closePanel.replace(/"/g, '&quot;')}" title="${T.closePanel.replace(/"/g, '&quot;')}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="18" height="18">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
         <div id="ai-seller-messages"></div>
         <div id="ai-seller-input-wrap">
           <div id="ai-seller-input-row">
@@ -584,6 +655,7 @@ function parseExplicitWidgetLang(raw: string | null): WidgetLang | null {
   shadow.appendChild(root);
 
   const panel = shadow.querySelector('#ai-seller-panel')!;
+  const headerCloseBtn = shadow.querySelector('#ai-seller-header-close') as HTMLButtonElement;
   const btn = shadow.querySelector('#ai-seller-btn')!;
   const greetingEl = shadow.querySelector('#ai-seller-greeting')!;
   const messagesEl = shadow.querySelector('#ai-seller-messages')!;
@@ -596,20 +668,39 @@ function parseExplicitWidgetLang(raw: string | null): WidgetLang | null {
   const avatarBtnEl = shadow.querySelector('#ai-seller-btn')!;
 
   let assistantAvatarUrl = '';
+  /** True only after /widget/avatar image successfully loads (custom company avatar). */
+  let assistantAvatarReady = false;
+
+  const ASSISTANT_PLACEHOLDER_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+  </svg>`;
+
+  function createAssistantSideAvatar(): HTMLElement {
+    if (assistantAvatarUrl && assistantAvatarReady) {
+      const img = document.createElement('img');
+      img.className = 'ai-seller-msg-avatar';
+      img.alt = '';
+      img.src = assistantAvatarUrl;
+      return img;
+    }
+    const el = document.createElement('div');
+    el.className = 'ai-seller-msg-avatar ai-seller-msg-avatar--placeholder';
+    el.setAttribute('aria-hidden', 'true');
+    el.innerHTML = ASSISTANT_PLACEHOLDER_SVG;
+    return el;
+  }
 
   function applyAvatarToMessages() {
-    if (!assistantAvatarUrl) return;
     messagesEl.querySelectorAll('.ai-seller-msg-row.assistant').forEach((row) => {
-      let avatar = row.querySelector('.ai-seller-msg-avatar') as HTMLImageElement | null;
-      if (!avatar) {
-        avatar = document.createElement('img');
-        avatar.className = 'ai-seller-msg-avatar';
-        avatar.alt = '';
-        avatar.src = assistantAvatarUrl;
-        row.insertBefore(avatar, row.firstChild);
-      } else {
-        avatar.src = assistantAvatarUrl;
+      const first = row.firstElementChild;
+      if (
+        first &&
+        (first.classList.contains('ai-seller-msg-avatar') ||
+          first.classList.contains('ai-seller-msg-avatar--placeholder'))
+      ) {
+        first.remove();
       }
+      row.insertBefore(createAssistantSideAvatar(), row.firstChild);
     });
   }
 
@@ -620,21 +711,31 @@ function parseExplicitWidgetLang(raw: string | null): WidgetLang | null {
       if (data.greeting && typeof data.greeting === 'string') {
         greetingEl.textContent = data.greeting;
       }
-      const headerEl = shadow.querySelector('#ai-seller-header');
-      if (headerEl) {
+      const headerTitleEl = shadow.querySelector('#ai-seller-header-title');
+      if (headerTitleEl) {
         const headerText = (data.header && typeof data.header === 'string' && data.header.trim())
           ? data.header.trim()
           : (data.greeting && typeof data.greeting === 'string' ? data.greeting : T.header);
-        headerEl.textContent = headerText;
+        headerTitleEl.textContent = headerText;
       }
       if (data.hasAvatar) {
+        assistantAvatarReady = false;
         assistantAvatarUrl = `${apiUrl}/widget/avatar?apiKey=${encodeURIComponent(apiKey!)}`;
         avatarImgEl.src = assistantAvatarUrl;
-        avatarImgEl.onerror = () => avatarBtnEl.classList.remove('has-custom-avatar');
+        avatarImgEl.onerror = () => {
+          assistantAvatarUrl = '';
+          assistantAvatarReady = false;
+          avatarBtnEl.classList.remove('has-custom-avatar');
+          applyAvatarToMessages();
+        };
         avatarImgEl.onload = () => {
+          assistantAvatarReady = true;
           avatarBtnEl.classList.add('has-custom-avatar');
           applyAvatarToMessages();
         };
+      } else {
+        assistantAvatarUrl = '';
+        assistantAvatarReady = false;
       }
       let footerHtml = '';
       if (data.websiteUrl && typeof data.websiteUrl === 'string' && data.websiteUrl.trim()) {
@@ -979,13 +1080,7 @@ function parseExplicitWidgetLang(raw: string | null): WidgetLang | null {
     const row = document.createElement('div');
     row.className = `ai-seller-msg-row ${role}`;
     if (role === 'assistant') {
-      if (assistantAvatarUrl) {
-        const avatar = document.createElement('img');
-        avatar.className = 'ai-seller-msg-avatar';
-        avatar.alt = '';
-        avatar.src = assistantAvatarUrl;
-        row.appendChild(avatar);
-      }
+      row.appendChild(createAssistantSideAvatar());
       const col = document.createElement('div');
       col.className = 'ai-seller-assistant-col';
       col.appendChild(msgDiv);
@@ -1037,13 +1132,7 @@ function parseExplicitWidgetLang(raw: string | null): WidgetLang | null {
         span.textContent = T.typing;
         typingRowEl = document.createElement('div');
         typingRowEl.className = 'ai-seller-msg-row assistant';
-        if (assistantAvatarUrl) {
-          const avatar = document.createElement('img');
-          avatar.className = 'ai-seller-msg-avatar';
-          avatar.alt = '';
-          avatar.src = assistantAvatarUrl;
-          typingRowEl.appendChild(avatar);
-        }
+        typingRowEl.appendChild(createAssistantSideAvatar());
         typingRowEl.appendChild(span);
         messagesEl.appendChild(typingRowEl);
       }
@@ -1184,6 +1273,20 @@ function parseExplicitWidgetLang(raw: string | null): WidgetLang | null {
     }
   });
 
+  function onPanelCloseSideEffects() {
+    allowMicWhenPanelClosed = false;
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+    try {
+      recognitionInstance?.stop();
+    } catch {
+      //
+    }
+    setMicListening(false);
+    setVoiceHint('');
+  }
+
   btn.addEventListener('click', () => {
     hideGreeting();
     const opening = !panel.classList.contains('open');
@@ -1198,18 +1301,16 @@ function parseExplicitWidgetLang(raw: string | null): WidgetLang | null {
         beginVoiceConversationOnOpen();
       }
     } else {
-      allowMicWhenPanelClosed = false;
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-      }
-      try {
-        recognitionInstance?.stop();
-      } catch {
-        //
-      }
-      setMicListening(false);
-      setVoiceHint('');
+      onPanelCloseSideEffects();
     }
+  });
+
+  headerCloseBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    hideGreeting();
+    if (!panel.classList.contains('open')) return;
+    panel.classList.remove('open');
+    onPanelCloseSideEffects();
   });
 
   if (voiceAutostartEnabled && voiceConversationMode) {

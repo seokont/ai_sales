@@ -188,6 +188,12 @@ export default function SettingsPage() {
                 onChange={async (e) => {
                   const file = e.target.files?.[0];
                   if (!file || !companyId) return;
+                  const maxAvatarBytes = 10 * 1024 * 1024;
+                  if (file.size > maxAvatarBytes) {
+                    alert(t.settings.widgetAvatarTooLarge);
+                    e.target.value = '';
+                    return;
+                  }
                   setAvatarUploading(true);
                   const res = await api.uploadCompanyAvatar(companyId, file);
                   setAvatarUploading(false);
