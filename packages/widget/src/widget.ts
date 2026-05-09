@@ -206,8 +206,8 @@ function parseExplicitWidgetLang(raw: string | null): WidgetLang | null {
         z-index: 2147483647;
       }
       @keyframes ai-seller-pulse {
-        0%, 100% { box-shadow: 0 4px 20px rgba(249, 115, 22, 0.5), 0 0 0 0 rgba(249, 115, 22, 0.4); }
-        50% { box-shadow: 0 6px 28px rgba(249, 115, 22, 0.6), 0 0 0 12px rgba(249, 115, 22, 0); }
+        0%, 100% { box-shadow: 0 4px 20px rgba(22, 163, 74, 0.5), 0 0 0 0 rgba(22, 163, 74, 0.4); }
+        50% { box-shadow: 0 6px 28px rgba(22, 163, 74, 0.6), 0 0 0 12px rgba(22, 163, 74, 0); }
       }
       @keyframes ai-seller-wave {
         0%, 100% { transform: rotate(0deg); }
@@ -284,8 +284,8 @@ function parseExplicitWidgetLang(raw: string | null): WidgetLang | null {
         animation: ai-seller-headless-ring 1.2s ease-in-out infinite, ai-seller-gradient 4s ease infinite;
       }
       @keyframes ai-seller-headless-ring {
-        0%, 100% { box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.5), 0 4px 20px rgba(249, 115, 22, 0.45); }
-        50% { box-shadow: 0 0 0 12px rgba(236, 72, 153, 0), 0 8px 32px rgba(139, 92, 246, 0.55); }
+        0%, 100% { box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.5), 0 4px 20px rgba(22, 163, 74, 0.45); }
+        50% { box-shadow: 0 0 0 12px rgba(34, 197, 94, 0), 0 8px 32px rgba(22, 163, 74, 0.55); }
       }
       #ai-seller-panel {
         position: absolute;
@@ -295,9 +295,9 @@ function parseExplicitWidgetLang(raw: string | null): WidgetLang | null {
         max-width: calc(100vw - 32px);
         max-height: 680px;
         max-height: min(680px, 85vh);
-        background: linear-gradient(180deg, #1e1b2e 0%, #16141f 100%);
+        background: linear-gradient(180deg, #0d1f12 0%, #091510 100%);
         border-radius: 12px;
-        box-shadow: 0 10px 40px rgba(139, 92, 246, 0.25), 0 0 0 1px rgba(236, 72, 153, 0.15);
+        box-shadow: 0 10px 40px rgba(22, 163, 74, 0.25), 0 0 0 1px rgba(34, 197, 94, 0.15);
         display: none;
         flex-direction: column;
         overflow: hidden;
@@ -323,6 +323,35 @@ function parseExplicitWidgetLang(raw: string | null): WidgetLang | null {
         flex: 1;
         min-width: 0;
         line-height: 1.35;
+      }
+      #ai-seller-header-name {
+        font-size: 15px;
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      #ai-seller-header-status {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 12px;
+        font-weight: 400;
+        opacity: 0.85;
+        margin-top: 1px;
+      }
+      .ai-seller-online-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #4ade80;
+        box-shadow: 0 0 6px rgba(74, 222, 128, 0.8);
+        flex-shrink: 0;
+        animation: ai-seller-dot-pulse 2s ease-in-out infinite;
+      }
+      @keyframes ai-seller-dot-pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
       }
       #ai-seller-header-close {
         flex-shrink: 0;
@@ -381,7 +410,7 @@ function parseExplicitWidgetLang(raw: string | null): WidgetLang | null {
         min-height: min(360px, 50vh);
         max-height: 500px;
         max-height: min(500px, 58vh);
-        background: #1a1724;
+        background: #0f1a11;
       }
       @supports (height: 100dvh) {
         #ai-seller-messages {
@@ -405,13 +434,13 @@ function parseExplicitWidgetLang(raw: string | null): WidgetLang | null {
       }
       .ai-seller-msg.user {
         margin-left: auto;
-        background: linear-gradient(135deg, #ec4899 0%, #d946ef 100%);
+        background: linear-gradient(135deg, #15803d 0%, #16a34a 100%);
         color: white;
       }
       .ai-seller-msg.assistant {
-        background: rgba(99, 102, 241, 0.2);
+        background: rgba(22, 163, 74, 0.15);
         color: #fafafa;
-        border: 1px solid rgba(139, 92, 246, 0.2);
+        border: 1px solid rgba(22, 163, 74, 0.2);
       }
       .ai-seller-msg-row {
         display: flex;
@@ -433,9 +462,9 @@ function parseExplicitWidgetLang(raw: string | null): WidgetLang | null {
         display: flex;
         align-items: center;
         justify-content: center;
-        background: linear-gradient(145deg, rgba(99, 102, 241, 0.35) 0%, rgba(139, 92, 246, 0.25) 100%);
-        border: 1px solid rgba(167, 139, 250, 0.35);
-        color: #e9d5ff;
+        background: linear-gradient(145deg, rgba(22, 163, 74, 0.35) 0%, rgba(16, 128, 61, 0.25) 100%);
+        border: 1px solid rgba(74, 222, 128, 0.35);
+        color: #dcfce7;
       }
       .ai-seller-msg-avatar--placeholder svg {
         width: 16px;
@@ -448,24 +477,24 @@ function parseExplicitWidgetLang(raw: string | null): WidgetLang | null {
         margin-bottom: 0;
       }
       .ai-seller-msg .ai-seller-link {
-        color: #a78bfa;
+        color: #4ade80;
         text-decoration: underline;
         word-break: break-all;
       }
       .ai-seller-msg .ai-seller-link:hover {
-        color: #c4b5fd;
+        color: #86efac;
       }
       #ai-seller-typing {
         display: inline-block;
         padding: 4px 8px;
-        background: rgba(139, 92, 246, 0.2);
+        background: rgba(22, 163, 74, 0.2);
         border-radius: 8px;
         font-size: 12px;
-        color: #c4b5fd;
+        color: #86efac;
       }
       #ai-seller-input-wrap {
         padding: 12px;
-        border-top: 1px solid rgba(139, 92, 246, 0.2);
+        border-top: 1px solid rgba(22, 163, 74, 0.2);
         flex-shrink: 0;
         display: flex;
         flex-direction: column;
@@ -483,24 +512,24 @@ function parseExplicitWidgetLang(raw: string | null): WidgetLang | null {
       #ai-seller-input {
         width: 100%;
         padding: 12px 16px;
-        border: 1px solid rgba(139, 92, 246, 0.3);
+        border: 1px solid rgba(22, 163, 74, 0.3);
         border-radius: 8px;
-        background: rgba(30, 27, 46, 0.8);
+        background: rgba(13, 31, 18, 0.8);
         color: #fafafa;
         font-size: 14px;
         outline: none;
       }
-      #ai-seller-input::placeholder { color: #a78bfa; opacity: 0.6; }
-      #ai-seller-input:focus { border-color: #8b5cf6; box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.3); }
+      #ai-seller-input::placeholder { color: #4ade80; opacity: 0.6; }
+      #ai-seller-input:focus { border-color: #16a34a; box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.3); }
       .ai-seller-mic {
         flex-shrink: 0;
         width: 44px;
         min-height: 44px;
         padding: 0;
         border-radius: 8px;
-        border: 1px solid rgba(139, 92, 246, 0.35);
-        background: rgba(99, 102, 241, 0.15);
-        color: #c4b5fd;
+        border: 1px solid rgba(22, 163, 74, 0.35);
+        background: rgba(22, 163, 74, 0.15);
+        color: #86efac;
         cursor: pointer;
         display: flex;
         align-items: center;
@@ -508,17 +537,17 @@ function parseExplicitWidgetLang(raw: string | null): WidgetLang | null {
         transition: background 0.15s, border-color 0.15s;
       }
       .ai-seller-mic:hover {
-        background: rgba(139, 92, 246, 0.25);
-        border-color: #8b5cf6;
+        background: rgba(22, 163, 74, 0.25);
+        border-color: #16a34a;
       }
       .ai-seller-mic.listening {
-        background: rgba(236, 72, 153, 0.25);
-        border-color: #ec4899;
+        background: rgba(34, 197, 94, 0.25);
+        border-color: #22c55e;
         animation: ai-seller-mic-pulse 1.2s ease-in-out infinite;
       }
       @keyframes ai-seller-mic-pulse {
-        0%, 100% { box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.35); }
-        50% { box-shadow: 0 0 0 6px rgba(236, 72, 153, 0); }
+        0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.35); }
+        50% { box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); }
       }
       .ai-seller-mic svg { width: 20px; height: 20px; }
       .ai-seller-mic.ai-seller-mic-unsupported {
@@ -526,8 +555,8 @@ function parseExplicitWidgetLang(raw: string | null): WidgetLang | null {
         cursor: not-allowed;
       }
       .ai-seller-mic.ai-seller-mic-unsupported:hover {
-        background: rgba(99, 102, 241, 0.15);
-        border-color: rgba(139, 92, 246, 0.35);
+        background: rgba(22, 163, 74, 0.15);
+        border-color: rgba(22, 163, 74, 0.35);
       }
       .ai-seller-voice-hint {
         min-height: 16px;
@@ -542,17 +571,17 @@ function parseExplicitWidgetLang(raw: string | null): WidgetLang | null {
         padding: 6px 8px;
         font-size: 11px;
         border-radius: 6px;
-        border: 1px solid rgba(139, 92, 246, 0.25);
-        background: rgba(30, 27, 46, 0.6);
-        color: #a78bfa;
+        border: 1px solid rgba(22, 163, 74, 0.25);
+        background: rgba(13, 31, 18, 0.6);
+        color: #4ade80;
         cursor: pointer;
         display: inline-flex;
         align-items: center;
         gap: 4px;
       }
       .ai-seller-speak-btn:hover {
-        background: rgba(139, 92, 246, 0.15);
-        color: #c4b5fd;
+        background: rgba(22, 163, 74, 0.15);
+        color: #86efac;
       }
       .ai-seller-speak-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
       #ai-seller-footer {
@@ -562,12 +591,12 @@ function parseExplicitWidgetLang(raw: string | null): WidgetLang | null {
         text-align: center;
       }
       #ai-seller-footer a {
-        color: #a78bfa;
+        color: #4ade80;
         text-decoration: none;
       }
       #ai-seller-footer a:hover {
         text-decoration: underline;
-        color: #c4b5fd;
+        color: #86efac;
       }
       #ai-seller-greeting {
         position: absolute;
@@ -579,7 +608,7 @@ function parseExplicitWidgetLang(raw: string | null): WidgetLang | null {
         font-size: 14px;
         font-weight: 500;
         border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
+        box-shadow: 0 4px 20px rgba(22, 163, 74, 0.4);
         white-space: nowrap;
         opacity: 0;
         transform: translateY(8px);
@@ -615,7 +644,10 @@ function parseExplicitWidgetLang(raw: string | null): WidgetLang | null {
             <img id="ai-seller-header-avatar-img" alt="" />
             <span id="ai-seller-header-avatar-emoji">🤖</span>
           </div>
-          <span id="ai-seller-header-title">${T.header}</span>
+          <div id="ai-seller-header-title">
+            <div id="ai-seller-header-name">${T.header}</div>
+            <div id="ai-seller-header-status"><span class="ai-seller-online-dot"></span>online</div>
+          </div>
           <button type="button" id="ai-seller-header-close" aria-label="${T.closePanel.replace(/"/g, '&quot;')}" title="${T.closePanel.replace(/"/g, '&quot;')}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="18" height="18">
               <line x1="18" y1="6" x2="6" y2="18" />
@@ -737,12 +769,12 @@ function parseExplicitWidgetLang(raw: string | null): WidgetLang | null {
       if (data.greeting && typeof data.greeting === 'string') {
         greetingEl.textContent = data.greeting;
       }
-      const headerTitleEl = shadow.querySelector('#ai-seller-header-title');
-      if (headerTitleEl) {
+      const headerNameEl = shadow.querySelector('#ai-seller-header-name');
+      if (headerNameEl) {
         const headerText = (data.header && typeof data.header === 'string' && data.header.trim())
           ? data.header.trim()
           : (data.greeting && typeof data.greeting === 'string' ? data.greeting : T.header);
-        headerTitleEl.textContent = headerText;
+        headerNameEl.textContent = headerText;
       }
       if (data.hasAvatar) {
         assistantAvatarReady = false;
