@@ -1,8 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
-import * as nodemailer from 'nodemailer';
 import { PrismaService } from '../prisma/prisma.service';
+import { TelegramService } from '../telegram/telegram.service';
 
-export interface EmailSettings {
+export interface NotificationSettings {
   emailHost: string | null;
   emailPort: number | null;
   emailSecure: boolean;
@@ -10,15 +10,17 @@ export interface EmailSettings {
   emailPass: string | null;
   emailFrom: string | null;
   emailTo: string | null;
+  telegramBotToken: string | null;
+  telegramChatId: string | null;
 }
 
 @Injectable()
 export class EmailService {
   private readonly logger = new Logger(EmailService.name);
 
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService, private telegramService: TelegramService) {}
 
-  async getSettings(): Promise<EmailSettings | null> {
+  async getSettings(): Promise<NotificationSettings | null> {
     const s = await this.prisma.settings.findFirst();
     if (!s) return null;
     return {
@@ -29,10 +31,12 @@ export class EmailService {
       emailPass: s.emailPass,
       emailFrom: s.emailFrom,
       emailTo: s.emailTo,
+      telegramBotToken: s.telegramBotToken,
+      telegramChatId: s.telegramChatId,
     };
   }
 
-  async updateSettings(data: Partial<EmailSettings>): Promise<EmailSettings> {
+  async updateSettings(data: Partial<NotificationSettings>): Promise<NotificationSettings> {
     const existing = await this.prisma.settings.findFirst();
     const payload: Record<string, unknown> = {};
     if (data.emailHost !== undefined) payload.emailHost = data.emailHost;
@@ -42,6 +46,8 @@ export class EmailService {
     if (data.emailPass !== undefined) payload.emailPass = data.emailPass;
     if (data.emailFrom !== undefined) payload.emailFrom = data.emailFrom;
     if (data.emailTo !== undefined) payload.emailTo = data.emailTo;
+    if (data.telegramBotToken !== undefined) payload.telegramBotToken = data.telegramBotToken;
+    if (data.telegramChatId !== undefined) payload.telegramChatId = data.telegramChatId;
     const s = existing
       ? await this.prisma.settings.update({ where: { id: existing.id }, data: payload as never })
       : await this.prisma.settings.create({ data: payload as never });
@@ -53,6 +59,8 @@ export class EmailService {
       emailPass: s.emailPass,
       emailFrom: s.emailFrom,
       emailTo: s.emailTo,
+      telegramBotToken: s.telegramBotToken,
+      telegramChatId: s.telegramChatId,
     };
   }
 
@@ -63,51 +71,43 @@ export class EmailService {
     plan?: string;
   }): Promise<{ sent: boolean; reason?: string }> {
     const settings = await this.getSettings();
-    const host = settings?.emailHost?.trim();
-    const to = settings?.emailTo?.trim();
-    const from = settings?.emailFrom?.trim();
-    if (!host || !to || !from) {
+    const botToken = settings?.telegramBotToken?.trim();
+    const chatId = settings?.telegramChatId?.trim();
+    if (!botToken || !chatId) {
       const missing: string[] = [];
-      if (!host) missing.push('emailHost');
-      if (!from) missing.push('emailFrom');
-      if (!to) missing.push('emailTo');
+      if (!botToken) missing.push('telegramBotToken');
+      if (!chatId) missing.push('telegramChatId');
       this.logger.warn(
-        `Contact email skipped: SMTP not configured in Admin → Settings (missing: ${missing.join(', ')}).`,
+        `Contact notification skipped: Telegram not configured in Admin → Settings (missing: ${missing.join(', ')}).`,
       );
-      return { sent: false, reason: 'smtp_not_configured' };
+      return { sent: false, reason: 'telegram_not_configured' };
     }
 
-    const port = settings!.emailPort ?? 587;
-    const secure =
-      settings!.emailSecure === true || port === 465;
-    const requireTLS = !secure && port === 587;
-
-    const transporter = nodemailer.createTransport({
-      host,
-      port,
-      secure,
-      requireTLS,
-      auth:
-        settings!.emailUser?.trim() && settings!.emailPass
-          ? { user: settings!.emailUser!.trim(), pass: settings!.emailPass }
-          : undefined,
-      connectionTimeout: 20_000,
-    });
-
     const planLabel = data.plan ? `\nPlan: ${data.plan}` : '';
+    const message = `🔔 *New contact from widget*\n\n*Name:* ${data.name}\n*Email:* ${data.email}${planLabel}\n\n*Message:*\n${data.message}`;
+
     try {
-      await transporter.sendMail({
-        from,
-        to,
-        subject: `[AI Seller] New contact: ${data.name}`,
-        text: `Name: ${data.name}\nEmail: ${data.email}${planLabel}\n\nMessage:\n${data.message}`,
-        html: `<p><b>Name:</b> ${data.name}</p><p><b>Email:</b> <a href="mailto:${data.email}">${data.email}</a></p>${data.plan ? `<p><b>Plan:</b> ${data.plan}</p>` : ''}<p><b>Message:</b></p><p>${data.message.replace(/\n/g, '<br>')}</p>`,
+      const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: message,
+          parse_mode: 'Markdown',
+        }),
       });
-      return { sent: true };
+      if (res.ok) {
+        return { sent: true };
+      } else {
+        const errorText = await res.text();
+        this.logger.error(`Telegram sendMessage failed: ${res.status} ${errorText}`);
+        return { sent: false, reason: 'telegram_send_failed' };
+      }
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
-      this.logger.error(`SMTP sendMail failed (${host}:${port}, secure=${secure}): ${msg}`);
-      return { sent: false, reason: 'smtp_send_failed' };
+      this.logger.error(`Telegram sendMessage error: ${msg}`);
+      return { sent: false, reason: 'telegram_error' };
     }
   }
 }

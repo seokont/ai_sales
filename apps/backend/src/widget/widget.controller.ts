@@ -32,7 +32,7 @@ export class WidgetController {
     await this.chatService.addMessage(chat.id, 'user', dto.message);
 
     const messages = [
-      ...chat.messages.map((m) => ({ role: m.role as 'user' | 'assistant', content: m.content })),
+      ...chat.messages.map((m: (typeof chat.messages)[number]) => ({ role: m.role as 'user' | 'assistant', content: m.content })),
       { role: 'user' as const, content: dto.message },
     ];
 
@@ -101,7 +101,7 @@ export class WidgetController {
     if (!chat) return { messages: [] };
     return {
       chatId: chat.id,
-      messages: chat.messages.map((m) => ({ role: m.role, content: m.content })),
+      messages: chat.messages.map((m: (typeof chat.messages)[number]) => ({ role: m.role, content: m.content })),
     };
   }
 }

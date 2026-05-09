@@ -243,7 +243,7 @@ function parseExplicitWidgetLang(raw: string | null): WidgetLang | null {
         width: 88px;
         height: 88px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #f97316 0%, #fb923c 20%, #ec4899 40%, #d946ef 60%, #8b5cf6 80%, #6366f1 100%);
+        background: linear-gradient(135deg, #14532d 0%, #15803d 30%, #16a34a 60%, #22c55e 80%, #4ade80 100%);
         background-size: 300% 300%;
         animation: ai-seller-pulse 2s ease-in-out infinite, ai-seller-gradient 4s ease infinite;
         border: 3px solid rgba(255,255,255,0.4);
@@ -253,7 +253,7 @@ function parseExplicitWidgetLang(raw: string | null): WidgetLang | null {
         justify-content: center;
         transition: transform 0.2s;
       }
-      #ai-seller-btn:hover:not(.ai-seller-headless-listening) { transform: scale(1.08); animation: ai-seller-gradient 2s ease infinite; box-shadow: 0 8px 32px rgba(236, 72, 153, 0.5), 0 0 20px rgba(139, 92, 246, 0.4); }
+      #ai-seller-btn:hover:not(.ai-seller-headless-listening) { transform: scale(1.08); animation: ai-seller-gradient 2s ease infinite; box-shadow: 0 8px 32px rgba(22, 163, 74, 0.5), 0 0 20px rgba(74, 222, 128, 0.4); }
       #ai-seller-btn .ai-seller-avatar { width: 56px; height: 56px; }
       #ai-seller-btn .ai-seller-avatar-img {
         width: 82px;
@@ -314,7 +314,7 @@ function parseExplicitWidgetLang(raw: string | null): WidgetLang | null {
         align-items: center;
         justify-content: space-between;
         gap: 8px;
-        background: linear-gradient(135deg, rgba(139, 92, 246, 0.4) 0%, rgba(236, 72, 153, 0.3) 50%, rgba(249, 115, 22, 0.25) 100%);
+        background: linear-gradient(135deg, #14532d 0%, #15803d 40%, #16a34a 70%, #22c55e 100%);
         font-weight: 600;
         color: white;
         flex-shrink: 0;
@@ -350,6 +350,26 @@ function parseExplicitWidgetLang(raw: string | null): WidgetLang | null {
       #ai-seller-header-close svg {
         display: block;
         pointer-events: none;
+      }
+      #ai-seller-header-avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        overflow: hidden;
+        background: rgba(255,255,255,0.15);
+        border: 1.5px solid rgba(255,255,255,0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        line-height: 1;
+      }
+      #ai-seller-header-avatar-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: none;
       }
       #ai-seller-messages {
         flex: 1;
@@ -554,7 +574,7 @@ function parseExplicitWidgetLang(raw: string | null): WidgetLang | null {
         bottom: 96px;
         right: 0;
         padding: 12px 16px;
-        background: linear-gradient(135deg, rgba(139, 92, 246, 0.95) 0%, rgba(236, 72, 153, 0.9) 100%);
+        background: linear-gradient(135deg, #14532d 0%, #15803d 40%, #16a34a 70%, #22c55e 100%);
         color: white;
         font-size: 14px;
         font-weight: 500;
@@ -573,7 +593,7 @@ function parseExplicitWidgetLang(raw: string | null): WidgetLang | null {
         right: 24px;
         border-left: 8px solid transparent;
         border-right: 8px solid transparent;
-        border-top: 8px solid rgba(236, 72, 153, 0.9);
+        border-top: 8px solid #16a34a;
       }
       #ai-seller-greeting.visible {
         opacity: 1;
@@ -591,6 +611,10 @@ function parseExplicitWidgetLang(raw: string | null): WidgetLang | null {
       <div id="ai-seller-greeting">${T.greeting}</div>
       <div id="ai-seller-panel">
         <div id="ai-seller-header">
+          <div id="ai-seller-header-avatar">
+            <img id="ai-seller-header-avatar-img" alt="" />
+            <span id="ai-seller-header-avatar-emoji">🤖</span>
+          </div>
           <span id="ai-seller-header-title">${T.header}</span>
           <button type="button" id="ai-seller-header-close" aria-label="${T.closePanel.replace(/"/g, '&quot;')}" title="${T.closePanel.replace(/"/g, '&quot;')}">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="18" height="18">
@@ -666,6 +690,8 @@ function parseExplicitWidgetLang(raw: string | null): WidgetLang | null {
   const footerEl = shadow.querySelector('#ai-seller-footer')!;
   const avatarImgEl = shadow.querySelector('#ai-seller-avatar-img') as HTMLImageElement;
   const avatarBtnEl = shadow.querySelector('#ai-seller-btn')!;
+  const headerAvatarImg = shadow.querySelector('#ai-seller-header-avatar-img') as HTMLImageElement;
+  const headerAvatarEmoji = shadow.querySelector('#ai-seller-header-avatar-emoji') as HTMLElement;;
 
   let assistantAvatarUrl = '';
   /** True only after /widget/avatar image successfully loads (custom company avatar). */
@@ -726,11 +752,18 @@ function parseExplicitWidgetLang(raw: string | null): WidgetLang | null {
           assistantAvatarUrl = '';
           assistantAvatarReady = false;
           avatarBtnEl.classList.remove('has-custom-avatar');
+          if (headerAvatarImg) headerAvatarImg.style.display = 'none';
+          if (headerAvatarEmoji) headerAvatarEmoji.style.display = '';
           applyAvatarToMessages();
         };
         avatarImgEl.onload = () => {
           assistantAvatarReady = true;
           avatarBtnEl.classList.add('has-custom-avatar');
+          if (headerAvatarImg) {
+            headerAvatarImg.src = assistantAvatarUrl;
+            headerAvatarImg.style.display = 'block';
+          }
+          if (headerAvatarEmoji) headerAvatarEmoji.style.display = 'none';
           applyAvatarToMessages();
         };
       } else {

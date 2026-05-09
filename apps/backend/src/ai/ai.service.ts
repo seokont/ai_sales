@@ -82,7 +82,7 @@ export class AiService {
     });
 
     const knowledgeContext = company.knowledge
-      .map((k) => this.formatKnowledgeForPrompt(k))
+      .map((k: (typeof company.knowledge)[number]) => this.formatKnowledgeForPrompt(k))
       .join('\n');
 
     const systemPrompt =

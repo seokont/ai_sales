@@ -29,7 +29,7 @@ export class AdminController {
       },
       orderBy: { createdAt: 'desc' },
     });
-    return companies.map((c) => ({
+    return companies.map((c: (typeof companies)[number]) => ({
       id: c.id,
       name: c.name,
       plan: c.plan,
@@ -40,7 +40,7 @@ export class AdminController {
       widgetHeader: c.widgetHeader ?? null,
       language: c.language ?? null,
       createdAt: c.createdAt,
-      users: c.users.map((u) => ({ id: u.user.id, email: u.user.email, name: u.user.name, role: u.role })),
+      users: c.users.map((u: (typeof c.users)[number]) => ({ id: u.user.id, email: u.user.email, name: u.user.name, role: u.role })),
     }));
   }
 
@@ -127,13 +127,13 @@ export class AdminController {
       },
       orderBy: { createdAt: 'desc' },
     });
-    return users.map((u) => ({
+    return users.map((u: (typeof users)[number]) => ({
       id: u.id,
       email: u.email,
       name: u.name,
       role: u.role || 'user',
       createdAt: u.createdAt,
-      companies: u.companies.map((uc) => ({
+      companies: u.companies.map((uc: (typeof u.companies)[number]) => ({
         id: uc.company.id,
         name: uc.company.name,
         plan: uc.company.plan,
@@ -214,6 +214,8 @@ export class AdminController {
       emailPass?: string | null;
       emailFrom?: string | null;
       emailTo?: string | null;
+      telegramBotToken?: string | null;
+      telegramChatId?: string | null;
     },
   ) {
     const data: Parameters<EmailService['updateSettings']>[0] = {};
@@ -226,6 +228,8 @@ export class AdminController {
     }
     if (body.emailFrom !== undefined) data.emailFrom = body.emailFrom?.trim() || null;
     if (body.emailTo !== undefined) data.emailTo = body.emailTo?.trim() || null;
+    if (body.telegramBotToken !== undefined) data.telegramBotToken = body.telegramBotToken?.trim() || null;
+    if (body.telegramChatId !== undefined) data.telegramChatId = body.telegramChatId?.trim() || null;
     const s = await this.emailService.updateSettings(data);
     return {
       ...s,

@@ -182,6 +182,8 @@ export const api = {
     emailPass?: string | null;
     emailFrom?: string | null;
     emailTo?: string | null;
+    telegramBotToken?: string | null;
+    telegramChatId?: string | null;
   }) =>
     fetchWithAuth('/admin/settings', {
       method: 'PATCH',

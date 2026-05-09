@@ -124,4 +124,6 @@ model Settings {
   emailPass   String?
   emailFrom   String?
   emailTo     String?
+  telegramBotToken String?
+  telegramChatId   String?
 }

@@ -50,6 +50,8 @@ export default function AdminPage() {
     emailPass: string;
     emailFrom: string;
     emailTo: string;
+    telegramBotToken: string;
+    telegramChatId: string;
   }>({
     emailHost: '',
     emailPort: '587',
@@ -58,6 +60,8 @@ export default function AdminPage() {
     emailPass: '',
     emailFrom: '',
     emailTo: '',
+    telegramBotToken: '',
+    telegramChatId: '',
   });
 
   const loadCompanies = () =>
@@ -94,6 +98,8 @@ export default function AdminPage() {
           emailPass: data.emailPass || '',
           emailFrom: data.emailFrom || '',
           emailTo: data.emailTo || '',
+          telegramBotToken: data.telegramBotToken || '',
+          telegramChatId: data.telegramChatId || '',
         });
       });
 
@@ -236,6 +242,8 @@ export default function AdminPage() {
       emailPass: settingsForm.emailPass === '••••••••' ? undefined : settingsForm.emailPass || null,
       emailFrom: settingsForm.emailFrom || null,
       emailTo: settingsForm.emailTo || null,
+      telegramBotToken: settingsForm.telegramBotToken || null,
+      telegramChatId: settingsForm.telegramChatId || null,
     });
     setSavingId(null);
     if (res.ok) loadSettings();
@@ -556,6 +564,24 @@ export default function AdminPage() {
                 value={settingsForm.emailTo}
                 onChange={(e) => setSettingsForm((f) => ({ ...f, emailTo: e.target.value }))}
                 placeholder="admin@example.com"
+                className="w-full px-3 py-2 rounded-lg bg-zinc-800 border border-zinc-700"
+              />
+            </div>
+            <div>
+              <label className="block text-zinc-400 mb-1">{t.admin.telegramBotToken}</label>
+              <input
+                value={settingsForm.telegramBotToken}
+                onChange={(e) => setSettingsForm((f) => ({ ...f, telegramBotToken: e.target.value }))}
+                placeholder="123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"
+                className="w-full px-3 py-2 rounded-lg bg-zinc-800 border border-zinc-700"
+              />
+            </div>
+            <div>
+              <label className="block text-zinc-400 mb-1">{t.admin.telegramChatId}</label>
+              <input
+                value={settingsForm.telegramChatId}
+                onChange={(e) => setSettingsForm((f) => ({ ...f, telegramChatId: e.target.value }))}
+                placeholder="-1001234567890"
                 className="w-full px-3 py-2 rounded-lg bg-zinc-800 border border-zinc-700"
               />
             </div>

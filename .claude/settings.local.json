@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -E \"\\\\.\\(md|json|yml|yaml|env\\)$\")",
+      "Bash(awk '{print $NF}')",
+      "Bash(npm run *)"
+    ]
+  }
+}

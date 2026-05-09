@@ -79,7 +79,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       await this.chatService.addMessage(chat.id, 'user', message);
 
       const messages = [
-        ...chat.messages.map((m) => ({
+        ...chat.messages.map((m: (typeof chat.messages)[number]) => ({
           role: m.role as 'user' | 'assistant',
           content: m.content,
         })),
